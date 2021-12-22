@@ -1,9 +1,8 @@
 const electron = require('electron');
-const ffmpeg = require('fluent-ffmpeg')
-const {app, BrowserWindow, ipcMain} = electron
+const {app, BrowserWindow, Menu} = electron
 
 let mainWindow;
-app.on('ready', ()=>{
+app.on('ready', () => {
   // As of version 5, the default for nodeIntegration changed from true to false. You can enable it when creating the Browser Window
   mainWindow = new BrowserWindow({
     webPreferences: {
@@ -11,12 +10,13 @@ app.on('ready', ()=>{
       contextIsolation: false,
     }
   })
-  mainWindow.loadURL(`file://${__dirname}/index.html`)
+  mainWindow.loadURL(`file://${__dirname}/main.html`)
+  const mainMenu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(mainMenu)
 })
 
-ipcMain.on('video:submit', (event, path)=>{
-  ffmpeg.ffprobe(path, (err, metadata)=>{
-    mainWindow.webContents.send('video:metadata', metadata.format.duration)
-
-  })
-})
+const menuTemplate = [
+  {
+    label: 'file'
+  }
+]
